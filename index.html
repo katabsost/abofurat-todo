@@ -496,12 +496,12 @@
     addTaskBtn.onclick = () => {
       const task = taskInput.value.trim();
       if(task === '') {
-        alert('يرجى كتابة المهمة أولاً');
+        alert('وينها المهمه حتى اضيفها !');
         return;
       }
 
       // اسأل المستخدم عن وقت التنبيه لكل مهمة (دقيقة)
-      let alertMinutes = prompt('كم تريد وقت التنبيه بالدقائق لهذه المهمة؟ اتركه صفر إذا ما تريد تنبيه', '0');
+      let alertMinutes = prompt('شكد تريد وقت حتى تخلصها يا بطل! عوفه فارغ اذامتحتاج', '0');
       alertMinutes = parseInt(alertMinutes);
       if (isNaN(alertMinutes) || alertMinutes < 0) alertMinutes = 0;
 
@@ -566,6 +566,12 @@
   <button id="playPianoBtn">تشغيل بيانو هادئ</button>
   <button id="playRainBtn">تشغيل صوت المطر</button>
   <button id="stopSoundBtn" disabled>إيقاف الصوت</button>
+  <body>
+  <h2>🎵 اختر نوع الصوت:</h2>
+  <button id="playPianoBtn">🎹 تشغيل البيانو</button>
+  <button id="playRainBtn">🌧️ تشغيل المطر</button>
+  <button id="stopSoundBtn" disabled>⏹️ إيقاف الصوت</button>
+</body>
 </div>
 
 <script>
