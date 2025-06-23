@@ -1,0 +1,73 @@
+
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+body.dark {
+  background-color: #121212;
+  color: #fff;
+}
+
+header {
+  padding: 20px;
+  background: linear-gradient(to right, #00b4db, #0083b0);
+  color: white;
+}
+
+#clock {
+  font-size: 1.5em;
+  margin: 10px 0;
+}
+
+form {
+  margin: 20px;
+}
+
+#taskInput,
+#taskTimer {
+  padding: 10px;
+  margin: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+button {
+  padding: 8px 12px;
+  margin: 5px;
+  border: none;
+  border-radius: 5px;
+  background-color: #00b4db;
+  color: white;
+  cursor: pointer;
+}
+
+#taskList {
+  list-style: none;
+  padding: 0;
+}
+
+#taskList li {
+  background-color: #f0f0f0;
+  margin: 10px auto;
+  padding: 10px;
+  width: 80%;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  direction: rtl;
+}
+
+body.dark #taskList li {
+  background-color: #1e1e1e;
+  color: #fff;
+}
+
+.music-controls {
+  margin-top: 30px;
+}
