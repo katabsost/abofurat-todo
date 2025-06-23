@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>قائمة مهامي + ساعة بغداد + موقت</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f0f2f5;
+    margin: 0; padding: 20px;
+    text-align: center;
+    color: #333;
+  }
+  h1 {
+    margin-bottom: 10px;
+  }
+  .clock, .timer {
+    background: white;
+    display: inline-block;
+    padding: 15px 25px;
+    margin: 10px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #aaa3;
+    min-width: 220px;
+  }
+  .clock {
+    font-size: 24px;
+    font-weight: bold;
+    letter-spacing: 2px;
+  }
+  .timer-controls button {
+    padding: 8px 15px;
+    margin: 5px;
+    border: none;
+    background: #28a745;
+    color: white;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .timer-controls button:hover {
+    background: #218838;
+  }
+  .timer-inputs input {
+    width: 50px;
+    padding: 6px;
+    font-size: 16px;
+    text-align: center;
+    margin: 5px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+  #taskInput {
+    padding: 10px;
+    width: 250px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    margin-top: 20px;
+  }
+  button.addTask {
+    padding: 10px 20px;
+    background: #007bff;
+    color: white;
+    border: none;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-left: 10px;
+  }
+  button.addTask:hover {
+    background: #0056b3;
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+    max-width: 320px;
+    margin: 20px auto 0;
+    text-align: right;
+  }
+  li {
+    background: white;
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  li.done {
+    text-decoration: line-through;
+    color: gray;
+  }
+  li button.deleteBtn {
+    background: #dc3545;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  li button.deleteBtn:hover {
+    background: #b02a37;
+  }
+  .task-count {
+    margin-top: 10px;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+
+<h1>قائمة مهامي 📋</h1>
+
+<div class="clock" id="baghdadClock">--:--:--</div>
+
+<div class="timer">
+  <div>
+    <label>الساعات: <input type="number" id="timerHours" min="0" max="99" value="0"></label>
+    <label>الدقائق: <input type="number" id="timerMinutes" min="0" max="59" value="0"></label>
+    <label>الثواني: <input type="number" id="timerSeconds" min="0" max="59" value="0"></label>
+  </div>
+  <div class="timer-controls">
+    <button id="startBtn">ابدأ</button>
+    <button id="pauseBtn" disabled>وقف</button>
+    <button id="resetBtn" disabled>إعادة</button>
+  </div>
+  <div id="timerDisplay" style="font-size:24px; margin-top:10px;">00:00:00</div>
+</div>
+
+<input type="text" id="taskInput" placeholder="اكتب مهمتك هنا..." />
+<button class="addTask" id="addTaskBtn">أضف</button>
+
+<ul id="taskList"></ul>
+
+<div class="task-count" id="taskCount">عدد المهام: 0</div>
+
+<script>
+  // ======= ساعة بغداد =======
+  function updateBaghdadClock() {
+    // بغداد UTC+3 بدون توقيت صيفي
+    const nowUTC = new Date(new Date().toUTCString());
+    const baghdadTime = new Date(nowUTC.getTime() + 3 * 60 * 60 * 1000);
+    const h = baghdadTime.getHours().toString().padStart(2, "0");
+    const m = baghdadTime.getMinutes().toString().padStart(2, "0");
+    const s = baghdadTime.getSeconds().toString().padStart(2, "0");
+    document.getElementById("baghdadClock").textContent = `${h}:${m}:${s}`;
+  }
+  setInterval(updateBaghdadClock, 1000);
+  updateBaghdadClock();
+
+  // ======= موقت عد تنازلي =======
+  let timerInterval = null;
+  let timerRemaining = 0;
+  let timerRunning = false;
+
+  function updateTimerDisplay() {
+    let hrs = Math.floor(timerRemaining / 3600);
+    let mins = Math.floor((timerRemaining % 3600) / 60);
+    let secs = timerRemaining % 60;
+    document.getElementById("timerDisplay").textContent = 
+      `${hrs.toString().padStart(2,"0")}:${mins.toString().padStart(2,"0")}:${secs.toString().padStart(2,"0")}`;
+  }
+
+  function startTimer() {
+    if (timerRunning) return;
+    const h = parseInt(document.getElementById("timerHours").value) || 0;
+    const m = parseInt(document.getElementById("timerMinutes").value) || 0;
+    const s = parseInt(document.getElementById("timerSeconds").value) || 0;
+    timerRemaining = h*3600 + m*60 + s;
+    if(timerRemaining <= 0) return alert("يرجى إدخال وقت صحيح للموقت");
+    updateTimerDisplay();
+    timerRunning = true;
+    document.getElementById("startBtn").disabled = true;
+    document.getElementById("pauseBtn").disabled = false;
+    document.getElementById("resetBtn").disabled = false;
+    timerInterval = setInterval(() => {
+      if (timerRemaining <= 0) {
+        clearInterval(timerInterval);
+        alert("انتهى الوقت!");
+        timerRunning = false;
+        document.getElementById("startBtn").disabled = false;
+        document.getElementById("pauseBtn").disabled = true;
+        return;
+      }
+      timerRemaining--;
+      updateTimerDisplay();
+    }, 1000);
+  }
+
+  function pauseTimer() {
+    if (!timerRunning) return;
+    clearInterval(timerInterval);
+    timerRunning = false;
+    document.getElementById("startBtn").disabled = false;
+    document.getElementById("pauseBtn").disabled = true;
+  }
+
+  function resetTimer() {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    timerRemaining = 0;
+    updateTimerDisplay();
+    document.getElementById("startBtn").disabled = false;
+    document.getElementById("pauseBtn").disabled = true;
+    document.getElementById("resetBtn").disabled = true;
+  }
+
+  document.getElementById("startBtn").addEventListener("click", startTimer);
+  document.getElementById("pauseBtn").addEventListener("click", pauseTimer);
+  document.getElementById("resetBtn").addEventListener("click", resetTimer);
+
+  // ======= قائمة المهام مع الحفظ التلقائي =======
+  const taskInput = document.getElementById("taskInput");
+  const addTaskBtn = document.getElementById("addTaskBtn");
+  const taskList = document.getElementById("taskList");
+  const taskCount = document.getElementById("taskCount");
+
+  // تحميل المهام من التخزين المحلي
+  let tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
+
+  function saveTasks() {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+    updateTaskCount();
+  }
+
+  function updateTaskCount() {
+    taskCount.textContent = `عدد المهام: ${tasks.length}`;
+  }
+
+  function renderTasks() {
+    taskList.innerHTML = "";
+    tasks.forEach((task, index) => {
+      const li = document.createElement("li");
+      li.textContent = task.text;
+      if(task.done) li.classList.add("done");
+
+      // عند الضغط على المهمة، تغير حالتها (منجزة / غير منجزة)
+      li.addEventListener("click", () => {
+        tasks[index].done = !tasks[index].done;
+        saveTasks();
+        renderTasks();
+      });
+
+      // زر حذف المهمة
+      const delBtn = document.createElement("button");
+      delBtn.textContent = "حذف";
+      delBtn.classList.add("deleteBtn");
+      delBtn.addEventListener("click", (e) => {
+        e.stopPropagation(); // حتى ما يتغير وضع المهمة عند الضغط على حذف
+        tasks.splice(index, 1);
+        saveTasks();
+        renderTasks();
+      });
+      li.appendChild(delBtn);
+      taskList.appendChild(li);
+    });
+    updateTaskCount();
+  }
+
+  addTaskBtn.addEventListener("click", () => {
+    const text = taskInput.value.trim();
+    if(text === "") return;
+    tasks.push({ text, done: false });
+    taskInput.value = "";
+    saveTasks();
+    renderTasks();
+  });
+
+  taskInput.addEventListener("keydown", e => {
+    if(e.key === "Enter") addTaskBtn.click();
+  });
+
+  renderTasks();
+</script>
+
+</body>
+</html>
