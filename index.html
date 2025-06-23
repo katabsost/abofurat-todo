@@ -519,46 +519,6 @@
     });
 
     updateTaskCount();
-
-    // أصوات هادئة - بيانو و صوت مطر
-    const pianoSound = new Audio('https://cdn.pixabay.com/download/audio/2021/09/28/audio_8bfc82bb45.mp3?filename=calm-piano-ambient-5516.mp3');
-    pianoSound.loop = true;
-
-    const rainSound = new Audio('https://cdn.pixabay.com/download/audio/2022/02/25/audio_6e4d7163de.mp3?filename=rain-ambience-9566.mp3');
-    rainSound.loop = true;
-
-    const playPianoBtn = document.getElementById('playPianoBtn');
-    const playRainBtn = document.getElementById('playRainBtn');
-    const stopSoundBtn = document.getElementById('stopSoundBtn');
-
-    function stopAllSounds() {
-      pianoSound.pause();
-      pianoSound.currentTime = 0;
-      rainSound.pause();
-      rainSound.currentTime = 0;
-      stopSoundBtn.disabled = true;
-      playPianoBtn.disabled = false;
-      playRainBtn.disabled = false;
-    }
-
-    playPianoBtn.onclick = () => {
-      stopAllSounds();
-      pianoSound.play();
-      stopSoundBtn.disabled = false;
-      playPianoBtn.disabled = true;
-      playRainBtn.disabled = true;
-    };
-
-    playRainBtn.onclick = () => {
-      stopAllSounds();
-      rainSound.play();
-      stopSoundBtn.disabled = false;
-      playPianoBtn.disabled = true;
-      playRainBtn.disabled = true;
-    };
-
-    stopSoundBtn.onclick = () => {
-      stopAllSounds();
     };
   </script>
 </body><!-- أزرار التحكم بالصوت -->
@@ -599,41 +559,6 @@
     } catch (e) {
       alert('لم يتم تشغيل الصوت. تأكد من أن المتصفح يسمح بتشغيل الصوت.');
     }
-  };
-
-  playRainBtn.onclick = async () => {
-    try {
-      stopAllSounds();
-      await rainSound.play();
-      stopSoundBtn.disabled = false;
-      playPianoBtn.disabled = true;
-      playRainBtn.disabled = true;
-    } catch (e) {
-      alert('لم يتم تشغيل الصوت. تأكد من أن المتصفح يسمح بتشغيل الصوت.');
-    }
-  };
-
-  stopSoundBtn.onclick = () => {
-    stopAllSounds();
-</body>
-</div>
-
-<script>
-
-  playRainBtn.onclick = async () => {
-    try {
-      stopAllSounds();
-      await rainSound.play();
-      stopSoundBtn.disabled = false;
-      playPianoBtn.disabled = true;
-      playRainBtn.disabled = true;
-    } catch (e) {
-      alert('لم يتم تشغيل الصوت. تأكد من سماح المتصفح بتشغيل الصوت.');
-    }
-  };
-
-  stopSoundBtn.onclick = () => {
-    stopAllSounds();
   };
 </script>
 </html>
