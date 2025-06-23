@@ -562,20 +562,12 @@
     };
   </script>
 </body><!-- أزرار التحكم بالصوت -->
-<div style="margin-top:20px; text-align:center;">
-  <button id="playPianoBtn">تشغيل بيانو هادئ</button>
-  <button id="playRainBtn">تشغيل صوت المطر</button>
-  <button id="stopSoundBtn" disabled>إيقاف الصوت</button>
-  <body>
   <h2>🎵 اختر نوع الصوت:</h2>
   <button id="playPianoBtn">🎹 تشغيل البيانو</button>
   <button id="playRainBtn">🌧️ تشغيل المطر</button>
   <button id="stopSoundBtn" disabled>⏹️ إيقاف الصوت</button>
-</body>
-</div>
-
-<script>
-  // أنشئ الأصوات
+  <script>
+  // الأصوات
   const pianoSound = new Audio('https://cdn.pixabay.com/download/audio/2021/09/28/audio_8bfc82bb45.mp3?filename=calm-piano-ambient-5516.mp3');
   pianoSound.loop = true;
 
@@ -605,9 +597,28 @@
       playPianoBtn.disabled = true;
       playRainBtn.disabled = true;
     } catch (e) {
-      alert('لم يتم تشغيل الصوت. تأكد من سماح المتصفح بتشغيل الصوت.');
+      alert('لم يتم تشغيل الصوت. تأكد من أن المتصفح يسمح بتشغيل الصوت.');
     }
   };
+
+  playRainBtn.onclick = async () => {
+    try {
+      stopAllSounds();
+      await rainSound.play();
+      stopSoundBtn.disabled = false;
+      playPianoBtn.disabled = true;
+      playRainBtn.disabled = true;
+    } catch (e) {
+      alert('لم يتم تشغيل الصوت. تأكد من أن المتصفح يسمح بتشغيل الصوت.');
+    }
+  };
+
+  stopSoundBtn.onclick = () => {
+    stopAllSounds();
+</body>
+</div>
+
+<script>
 
   playRainBtn.onclick = async () => {
     try {
