@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>أنجز مهامك</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    body.light {
+      background: #f0f8ff;
+      color: #333;
+    }
+
+    body.dark {
+      background: #1a1a1a;
+      color: #f0f0f0;
+    }
+
+    h1 {
+      color: #007acc;
+    }
+
+    #taskInput {
+      width: 60%;
+      padding: 10px;
+      border: 2px solid #007acc;
+      border-radius: 8px;
+    }
+
+    button {
+      padding: 10px 15px;
+      margin: 5px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background-color: #007acc;
+      color: white;
+    }
+
+    button:hover {
+      background-color: #005fa3;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      background: #ffffff;
+      margin: 10px auto;
+      padding: 10px;
+      border-radius: 10px;
+      width: 70%;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    body.dark li {
+      background: #2a2a2a;
+      box-shadow: none;
+    }
+
+    .done {
+      text-decoration: line-through;
+      color: green;
+    }
+
+    .timer {
+      font-size: 0.9em;
+      color: #888;
+    }
+
+    .controls {
+      margin: 20px 0;
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 0.9em;
+      color: #777;
+    }
+
+    .time-display {
+      font-size: 1.3em;
+      margin-bottom: 15px;
+    }
+
+    #themeBtn {
+      float: left;
+      margin-left: 15px;
+      background: #444;
+    }
+
+    body.light #themeBtn {
+      background: #007acc;
+    }
+  </style>
+</head>
+<body class="light">
+
+  <button id="themeBtn" onclick="toggleTheme()">🌓 تغيير الثيم</button>
+
+  <h1>أنجز مهامك</h1>
+
+  <div class="time-display">
+    ⏰ التوقيت المحلي للعراق: <span id="iraqClock"></span><br>
+    ⏳ مؤقت عد تنازلي: <span id="countdown">00:10:00</span>
+  </div>
+
+  <input type="text" id="taskInput" placeholder="أدخل مهمتك هنا..." />
+  <button onclick="addTask()">➕ إضافة</button>
+
+  <ul id="taskList"></ul>
+
+  <div class="controls">
+    <h3>🎵 أصوات للدراسة:</h3>
+    <button onclick="toggleSound()">تشغيل / إيقاف الصوت</button><br>
+    <audio id="studyAudio" loop>
+      <source src="https://cdn.pixabay.com/download/audio/2022/03/17/audio_bf39ccf548.mp3" type="audio/mp3">
+      متصفحك لا يدعم الصوت.
+    </audio>
+  </div>
+
+  <footer>Made from abofurat</footer>
+
+  <script>
+    // ساعة العراق
+    function updateIraqTime() {
+      const options = { timeZone: 'Asia/Baghdad', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+      const time = new Intl.DateTimeFormat('ar-IQ', options).format(new Date());
+      document.getElementById('iraqClock').textContent = time;
+    }
+    setInterval(updateIraqTime, 1000);
+    updateIraqTime();
+
+    // عد تنازلي عام
+    let totalSeconds = 600;
+    const countdownEl = document.getElementById("countdown");
+    setInterval(() => {
+      if (totalSeconds > 0) {
+        totalSeconds--;
+        const min = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+        const sec = String(totalSeconds % 60).padStart(2, '0');
+        countdownEl.textContent = `00:${min}:${sec}`;
+      }
+    }, 1000);
+
+    // تخزين المهام
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+    function saveTasks() {
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
+
+    function renderTasks() {
+      const list = document.getElementById("taskList");
+      list.innerHTML = "";
+      tasks.forEach((task, index) => {
+        const li = document.createElement("li");
+        const taskSpan = document.createElement("span");
+        taskSpan.textContent = task.text;
+        if (task.done) taskSpan.classList.add("done");
+
+        const timerSpan = document.createElement("span");
+        timerSpan.className = "timer";
+        timerSpan.textContent = task.timer || "⏳ 5:00";
+
+        const checkBtn = document.createElement("button");
+        checkBtn.textContent = "✔️";
+        checkBtn.onclick = () => {
+          tasks[index].done = !tasks[index].done;
+          saveTasks();
+          renderTasks();
+        };
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "🗑️";
+        deleteBtn.onclick = () => {
+          tasks.splice(index, 1);
+          saveTasks();
+          renderTasks();
+        };
+
+        li.append(taskSpan, timerSpan, checkBtn, deleteBtn);
+        list.appendChild(li);
+        if (!task.timerStarted) {
+          startTaskTimer(timerSpan, 5 * 60, index);
+          tasks[index].timerStarted = true;
+        }
+      });
+    }
+
+    function addTask() {
+      const input = document.getElementById("taskInput");
+      const text = input.value;
+      if (!text) return;
+      tasks.push({ text, done: false, timer: "⏳ 5:00", timerStarted: false });
+      input.value = "";
+      saveTasks();
+      renderTasks();
+    }
+
+    function startTaskTimer(span, seconds, index) {
+      let remaining = seconds;
+      const interval = setInterval(() => {
+        if (remaining <= 0) {
+          span.textContent = "⏰ انتهى الوقت!";
+          tasks[index].timer = "انتهى";
+          saveTasks();
+          clearInterval(interval);
+        } else {
+          let min = String(Math.floor(remaining / 60)).padStart(2, '0');
+          let sec = String(remaining % 60).padStart(2, '0');
+          const display = `⏳ ${min}:${sec}`;
+          span.textContent = display;
+          tasks[index].timer = display;
+          saveTasks();
+          remaining--;
+        }
+      }, 1000);
+    }
+
+    // تشغيل / إيقاف صوت
+    function toggleSound() {
+      const audio = document.getElementById("studyAudio");
+      if (audio.paused) audio.play();
+      else audio.pause();
+    }
+
+    // الثيم (فاتح / داكن)
+    function toggleTheme() {
+      const body = document.body;
+      body.classList.toggle("dark");
+      body.classList.toggle("light");
+      localStorage.setItem("theme", body.classList.contains("dark") ? "dark" : "light");
+    }
+
+    // استعادة الثيم
+    window.onload = () => {
+      const savedTheme = localStorage.getItem("theme");
+      if (savedTheme) {
+        document.body.classList.remove("light", "dark");
+        document.body.classList.add(savedTheme);
+      }
+      renderTasks();
+    };
+  </script>
+
+</body>
+</html>
