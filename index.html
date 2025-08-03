@@ -1,1 +1,148 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <title>مراجعة ذكية - التكرار المتباعد</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f2f2f2;
+      direction: rtl;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      color: #333;
+    }
+    .card {
+      background-color: white;
+      padding: 20px;
+      margin: 10px auto;
+      width: 90%;
+      max-width: 500px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    textarea, input[type="text"] {
+      width: 90%;
+      padding: 10px;
+      margin: 5px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      padding: 8px 16px;
+      margin: 5px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #answer {
+      display: none;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>مراجعة ذكية - نظام التكرار المتباعد</h1>
+
+  <div class="card">
+    <h3>أضف بطاقة جديدة</h3>
+    <input type="text" id="question" placeholder="أدخل السؤال">
+    <textarea id="answerText" placeholder="أدخل الجواب"></textarea>
+    <button onclick="addCard()">أضف البطاقة</button>
+  </div>
+
+  <div class="card" id="reviewCard" style="display:none;">
+    <h3>بطاقة للمراجعة</h3>
+    <p id="cardQuestion"></p>
+    <button onclick="showAnswer()">عرض الجواب</button>
+    <div id="answer">
+      <p id="cardAnswer"></p>
+      <p>كيف كان تذكرك؟</p>
+      <button onclick="rateCard('easy')">سهل</button>
+      <button onclick="rateCard('medium')">متوسط</button>
+      <button onclick="rateCard('hard')">صعب</button>
+    </div>
+  </div>
+
+  <script>
+    let cards = JSON.parse(localStorage.getItem('cards') || '[]');
+    let today = new Date().toISOString().split('T')[0];
+
+    function saveCards() {
+      localStorage.setItem('cards', JSON.stringify(cards));
+    }
+
+    function addCard() {
+      const question = document.getElementById('question').value.trim();
+      const answer = document.getElementById('answerText').value.trim();
+      if (!question || !answer) return alert("يرجى إدخال سؤال وجواب");
+
+      cards.push({
+        question,
+        answer,
+        lastReview: null,
+        interval: 1,
+        nextReview: today,
+        reviews: 0
+      });
+
+      saveCards();
+      document.getElementById('question').value = '';
+      document.getElementById('answerText').value = '';
+      alert("تمت إضافة البطاقة ✅");
+      loadNextCard();
+    }
+
+    function loadNextCard() {
+      const dueCards = cards.filter(c => !c.nextReview || new Date(c.nextReview) <= new Date());
+      if (dueCards.length === 0) {
+        document.getElementById('reviewCard').style.display = 'none';
+        return;
+      }
+
+      currentCard = dueCards[0];
+      document.getElementById('cardQuestion').innerText = currentCard.question;
+      document.getElementById('cardAnswer').innerText = currentCard.answer;
+      document.getElementById('answer').style.display = 'none';
+      document.getElementById('reviewCard').style.display = 'block';
+    }
+
+    function showAnswer() {
+      document.getElementById('answer').style.display = 'block';
+    }
+
+    function rateCard(difficulty) {
+      const now = new Date();
+      const card = currentCard;
+      let factor = 1;
+      if (difficulty === 'easy') factor = 2;
+      else if (difficulty === 'medium') factor = 1.5;
+      else factor = 1;
+
+      card.interval = Math.ceil(card.interval * factor);
+      card.lastReview = now.toISOString().split('T')[0];
+      const next = new Date();
+      next.setDate(now.getDate() + card.interval);
+      card.nextReview = next.toISOString().split('T')[0];
+      card.reviews += 1;
+
+      saveCards();
+      loadNextCard();
+    }
+
+    let currentCard = null;
+    loadNextCard();
+  </script>
+
+</body>
+</html>
+
 
