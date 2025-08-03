@@ -1,45 +1,0 @@
-
-
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>أنجز مهامك</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <header>
-    <h1>أنجز مهامك</h1>
-    <div id="clock"></div>
-    <button id="themeToggle">🌓 تغيير الثيم</button>
-  </header>
-
-  <main>
-    <form id="taskForm">
-      <input type="text" id="taskInput" placeholder="أضف مهمة جديدة" required />
-      <input type="number" id="taskTimer" placeholder="مدة المهمة (دقائق)" min="1" />
-      <button type="submit">➕ أضف</button>
-    </form>
-
-    <ul id="taskList"></ul>
-
-    <div class="music-controls">
-      <label>🎵 اختر نوع الموسيقى:</label>
-      <select id="musicSelect">
-        <option value="study1">دراسية 1</option>
-        <option value="study2">دراسية 2</option>
-      </select>
-      <button id="playMusic">تشغيل</button>
-      <button id="stopMusic">إيقاف</button>
-    </div>
-  </main>
-
-  <footer>
-    <p>Made by abofurat</p>
-  </footer>
-
-  <audio id="audioPlayer" loop></audio>
-  <script src="script.js"></script>
-</body>
-</html>
