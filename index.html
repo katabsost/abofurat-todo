@@ -3,47 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>موقعي الدراسي</title>
+  <title>مقياس الحب 💖</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header>
-    <h1>مرحبا بكم في موقعي الدراسي</h1>
-    <nav>
-      <ul>
-        <li><a href="#">الرئيسية</a></li>
-        <li><a href="#">الدروس</a></li>
-        <li><a href="#">الاختبارات</a></li>
-        <li><a href="#">تواصل معنا</a></li>
-      </ul>
-    </nav>
-  </header>
 
-  <main>
-    <section class="intro">
-      <h2>ابدأ رحلتك التعليمية</h2>
-      <p>هنا تجد دروس ومواد مفيدة لجميع المراحل الدراسية.</p>
-    </section>
+  <div class="container">
+    <h1>مقياس الحب بين علاوي والبحرينه 💘</h1>
 
-    <section class="courses">
-      <h2>الدورات المتوفرة</h2>
-      <div class="course-list">
-        <div class="course">
-          <h3>الرياضيات</h3>
-          <p>شرح مبسط ومفصل لجميع الدروس.</p>
-        </div>
-        <div class="course">
-          <h3>اللغة العربية</h3>
-          <p>قواعد، تعبير، ونصوص أدبية.</p>
-        </div>
+    <div class="circles">
+      <div class="circle">علاوي</div>
+      <div class="heart" id="heart">
+        <span id="love-percent">❤️</span>
       </div>
-    </section>
-  </main>
+      <div class="circle">البحرينه</div>
+    </div>
 
-  <footer>
-    <p>&copy; 2025 موقعي الدراسي</p>
-  </footer>
+    <button onclick="calculateLove()">احسب نسبة الحب ❤️</button>
+
+    <audio id="love-audio" src="love.mp3" preload="auto"></audio>
+  </div>
 
   <script src="script.js"></script>
 </body>
 </html>
+
