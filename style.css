@@ -1,0 +1,79 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  direction: rtl;
+  font-family: 'Arial', sans-serif;
+}
+
+body {
+  background-color: #c0392b; /* أحمر غامق */
+  color: white;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  text-align: center;
+  padding: 20px;
+}
+
+h1 {
+  margin-bottom: 40px;
+}
+
+.circles {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+.circle {
+  width: 120px;
+  height: 120px;
+  background-color: white;
+  color: #c0392b;
+  font-size: 20px;
+  font-weight: bold;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.heart {
+  width: 140px;
+  height: 140px;
+  background: url('https://i.ibb.co/DgdXkKH/heart.png') no-repeat center;
+  background-size: contain;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#love-percent {
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+}
+
+button {
+  background-color: white;
+  color: #c0392b;
+  padding: 12px 25px;
+  font-size: 18px;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #f1c40f;
+  color: black;
+}
